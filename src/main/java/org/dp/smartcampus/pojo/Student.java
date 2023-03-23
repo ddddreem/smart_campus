@@ -16,11 +16,13 @@ public class Student {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     private String sno; // 学生编号
+    private String name;
     private Character gender;
     private String password;
     private String email;
     private String telephone;
     private String address;
-    private String introduction;
+    private String introducation;
     private String portraitPath;
+    private String clazzName;
 }

@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class Teacher {
 
     @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
     private String tno;
     private String name;
     private Character gender;

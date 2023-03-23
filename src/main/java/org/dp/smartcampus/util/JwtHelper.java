@@ -3,6 +3,7 @@ package org.dp.smartcampus.util;
 import io.jsonwebtoken.*;
 import org.springframework.util.StringUtils;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class JwtHelper { // token生成工具类

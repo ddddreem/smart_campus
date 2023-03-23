@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("t_admin")
+@TableName("tb_admin")
 public class Admin {
 
     @TableId(value = "id", type = IdType.AUTO)

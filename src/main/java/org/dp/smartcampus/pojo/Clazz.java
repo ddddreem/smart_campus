@@ -17,7 +17,7 @@ public class Clazz { // 班级类
     private Integer id;
     private String name;
     private Integer number;
-    private String introduction;
+    private String introducation;
     private String headmaster;
     private String email;
     private String telephone;

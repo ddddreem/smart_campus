@@ -61,13 +61,13 @@ public class UploadFile {
      * @param: portraitPath
      * @return: java.util.Map<java.lang.String, java.lang.Object>
      */
-    public static Map<String, Object> getUploadResult(MultipartFile photo, String dirPaht, String portraitPath) {
+    public static Map<String, Object> getUploadResult(MultipartFile photo, String dirPath, String portraitPath) {
 
         if (!photo.isEmpty() && photo.getSize() > 0) {
             //获取图片的原始名称
             String orginalName = photo.getOriginalFilename();
             //上传图片,error_result:存储头像上传失败的错误信息
-            Map<String, Object> error_result = UploadFile.uploadPhoto(photo, dirPaht);
+            Map<String, Object> error_result = UploadFile.uploadPhoto(photo, dirPath);
             if (error_result != null) {
                 return error_result;
             }
@@ -75,7 +75,7 @@ public class UploadFile {
             String newPhotoName = UUID.randomUUID() + "__" + orginalName;
             //将上传的文件保存到目标目录下
             try {
-                photo.transferTo(new File(dirPaht + newPhotoName));
+                photo.transferTo(new File(dirPath + newPhotoName));
                 upload_result.put("success", true);
                 upload_result.put("portrait_path", portraitPath + newPhotoName);//将存储头像的项目路径返回给页面
             } catch (IOException e) {
