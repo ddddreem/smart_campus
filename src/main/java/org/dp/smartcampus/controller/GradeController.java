@@ -54,7 +54,7 @@ public class GradeController {
 
     @ApiOperation("删除单条或者多条年级记录")
     @DeleteMapping("/deleteGrade")
-    public Result deleteGrade(@RequestBody List<Integer> ids){
+    public Result deleteGrade(@ApiParam("需要删除的id集合") @RequestBody List<Integer> ids){
         boolean b = gradeService.removeByIds(ids);
         return b ? Result.ok() : Result.fail().message("系统错误...");
     }

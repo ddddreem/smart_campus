@@ -53,7 +53,7 @@ public class AdminController {
 
     @ApiOperation("删除单条或者多条管理员记录")
     @DeleteMapping("/deleteAdmin")
-    public Result deleteTeacher(@RequestBody List<Integer> ids){
+    public Result deleteTeacher(@ApiParam("需要删除的id集合") @RequestBody List<Integer> ids){
         boolean b = adminService.removeByIds(ids);
         return b ? Result.ok() : Result.fail().message("系统错误...");
     }

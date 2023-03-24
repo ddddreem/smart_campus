@@ -36,8 +36,8 @@ public class ClazzController {
     @ApiOperation("获取所有班级项")
     @GetMapping("/getClazzsByOpr/{pageNo}/{pageSize}")
     public Result getClazzs(
-            @PathVariable("pageNo") Integer pageNo,
-            @PathVariable("pageSize") Integer pageSize,
+            @ApiParam("页号") @PathVariable("pageNo") Integer pageNo,
+            @ApiParam("页容量") @PathVariable("pageSize") Integer pageSize,
             Clazz clazz
     ){
         Page<Clazz> pageParam = new Page<>(pageNo, pageSize);
@@ -54,7 +54,7 @@ public class ClazzController {
 
     @ApiOperation("删除单条或者多条班级记录")
     @DeleteMapping("/deleteClazz")
-    public Result deleteClazz(@RequestBody List<Integer> ids){
+    public Result deleteClazz(@ApiParam("需要删除的id集合") @RequestBody List<Integer> ids){
         boolean b = clazzService.removeByIds(ids);
         return b ? Result.ok() : Result.fail().message("系统错误...");
     }

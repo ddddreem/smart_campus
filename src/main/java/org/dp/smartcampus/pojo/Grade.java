@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("tb_grade")
-public class Grade {
+public class Grade { // 年级类
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;

@@ -58,12 +58,12 @@ public class SystemController {
             @ApiParam("路径中的旧密码") @PathVariable("oldPwd") String oldPwd,
             @ApiParam("路径的新密码") @PathVariable("newPwd") String newPwd
     ){
-        Integer userType = JwtHelper.getUserType(token);
+        Integer userType = JwtHelper.getUserType(token); // 通过token来获取当前的用户信息，即知道当前用户是哪种类型，根据类型去相应的表中找相应id的记录
         Integer userId = JwtHelper.getUserId(token).intValue();
         switch (userType){
             case 1: // 管理员
                 Admin admin = adminService.getAdminById(userId);
-                if(!admin.getPassword().equals(MD5.encrypt(oldPwd))){
+                if(!admin.getPassword().equals(MD5.encrypt(oldPwd))){ // 验证此时输入的旧密码是否与数据库中的密码一致
                    return Result.fail().message("旧密码错误...");
                 }
                 admin.setPassword(MD5.encrypt(newPwd));
@@ -91,7 +91,8 @@ public class SystemController {
 
     @ApiOperation("文件上传同意接口")
     @PostMapping("/headerImgUpload")
-    public Result headerImgUpload(@ApiParam("头像文件")@RequestPart("multipartFile") MultipartFile multipartFile){
+    public Result headerImgUpload(
+            @ApiParam("头像文件")@RequestPart("multipartFile") MultipartFile multipartFile){
         //使用UUID随机生成文件名
         String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
         //生成新的文件名字
@@ -100,11 +101,11 @@ public class SystemController {
         String portraitPath ="d:/projects/java/SpringBoot/smartcampus/target/classes/public/upload/".concat(filename);
         new Runnable() {
             @Override
-            public void run() {
-                //保存文件
+            public void run() { // 新开一个线程用来异步保存图片，由于前端这个时候只需要图片存放的地址信息
+                // 异步保存文件
                 try {
                     Logger logger = Logger.getLogger("org.dp.smartcampus.controller.TeacherController");
-                    logger.info("file-upload-start...");
+                    logger.info("file-upload-start..."); // 保存文件，后台日志打印
                     multipartFile.transferTo(new File(portraitPath));
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -166,10 +167,12 @@ public class SystemController {
 
     @ApiOperation("前台登录方法")
     @PostMapping("/login")
-    public Result login(@ApiParam("前台登录页面填写的用户信息") @RequestBody LoginForm loginForm, HttpServletRequest request) {
+    public Result login(
+            @ApiParam("前台登录页面填写的用户信息") @RequestBody LoginForm loginForm,
+            HttpServletRequest request) {
         // 验证码校验
         HttpSession session = request.getSession();
-        String sessionVerifiCode = (String) session.getAttribute("verifiCode");
+        String sessionVerifiCode = (String) session.getAttribute("verifiCode"); // 获取验证码准备校验
         String loginVerifiCode = loginForm.getVerifiCode();
         if("".equals(sessionVerifiCode) || null == sessionVerifiCode){
             return Result.fail().message("验证码过期...");
@@ -223,19 +226,19 @@ public class SystemController {
     @GetMapping("getVerifiCodeImage") // 获取验证码方法
     public void getVerifiCodeImage(HttpServletRequest request, HttpServletResponse response){
 
-        BufferedImage verifiCodeImage = CreateVerifiCodeImage.getVerifiCodeImage();
+        BufferedImage verifiCodeImage = CreateVerifiCodeImage.getVerifiCodeImage(); // 使用工具类生成验证码图片
 
-        String verifiCode = new String(CreateVerifiCodeImage.getVerifiCode());
+        String verifiCode = new String(CreateVerifiCodeImage.getVerifiCode()); // 获取生成的验证码图片上的验证码信息
 
         HttpSession session = request.getSession();
 
-        session.setAttribute("verifiCode", verifiCode);
+        session.setAttribute("verifiCode", verifiCode); // 往session中存验证码信息，方便后面验证
 
         ServletOutputStream os = null;
 
         try{
             os = response.getOutputStream();
-            ImageIO.write(verifiCodeImage, "JPEG", os);
+            ImageIO.write(verifiCodeImage, "JPEG", os); // 将生成的验证码图片通过流写出到前台页面
         }catch(Exception e){
             e.printStackTrace();
         }

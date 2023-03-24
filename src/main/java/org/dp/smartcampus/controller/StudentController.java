@@ -37,8 +37,8 @@ public class StudentController {
     @ApiOperation("获取所有学生项")
     @GetMapping("/getStudentByOpr/{pageNo}/{pageSize}")
     public Result getStudentByOpr(
-            @PathVariable("pageNo") Integer pageNo,
-            @PathVariable("pageSize") Integer pageSize,
+            @ApiParam("页号") @PathVariable("pageNo") Integer pageNo,
+            @ApiParam("页容量") @PathVariable("pageSize") Integer pageSize,
             Student student
     ){
         Page<Student> pageParam = new Page<>(pageNo, pageSize);
@@ -60,7 +60,7 @@ public class StudentController {
 
     @ApiOperation("删除单条或者多条教师记录")
     @DeleteMapping("/delStudentById")
-    public Result delStudentById(@RequestBody List<Integer> ids){
+    public Result delStudentById(@ApiParam("需要删除的id集合") @RequestBody List<Integer> ids){
         boolean b = studentService.removeByIds(ids);
         return b ? Result.ok() : Result.fail().message("系统错误...");
     }

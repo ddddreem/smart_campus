@@ -36,9 +36,9 @@ public class TeacherController {
     @ApiOperation("获取所有教师项")
     @GetMapping("/getTeachers/{pageNo}/{pageSize}")
     public Result getTeachers(
-            @PathVariable("pageNo") Integer pageNo,
-            @PathVariable("pageSize") Integer pageSize,
-            Teacher teacher
+            @ApiParam("页号") @PathVariable("pageNo") Integer pageNo,
+            @ApiParam("页容量") @PathVariable("pageSize") Integer pageSize,
+            @ApiParam("将信息封装成老师对象") Teacher teacher
     ){
         Page<Teacher> pageParam = new Page<>(pageNo, pageSize);
         IPage<Teacher> page = teacherService.getTeachersByOpr(pageParam, teacher);
@@ -54,7 +54,7 @@ public class TeacherController {
 
     @ApiOperation("删除单条或者多条教师记录")
     @DeleteMapping("/deleteTeacher")
-    public Result deleteTeacher(@RequestBody List<Integer> ids){
+    public Result deleteTeacher(@ApiParam("需要删除的id集合") @RequestBody List<Integer> ids){
         boolean b = teacherService.removeByIds(ids);
         return b ? Result.ok() : Result.fail().message("系统错误...");
     }
