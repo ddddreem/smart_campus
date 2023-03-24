@@ -12,6 +12,7 @@ import org.dp.smartcampus.service.StudentService;
 import org.dp.smartcampus.service.TeacherService;
 import org.dp.smartcampus.util.CreateVerifiCodeImage;
 import org.dp.smartcampus.util.JwtHelper;
+import org.dp.smartcampus.util.MD5;
 import org.dp.smartcampus.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +50,44 @@ public class SystemController {
 
     @Autowired
     private TeacherService teacherService;
+
+    @ApiOperation("全局更新密码")
+    @PostMapping("/updatePwd/{oldPwd}/{newPwd}")
+    public Result updatePwd(
+            @ApiParam("在请求头中获取token信息") @RequestHeader("token") String token,
+            @ApiParam("路径中的旧密码") @PathVariable("oldPwd") String oldPwd,
+            @ApiParam("路径的新密码") @PathVariable("newPwd") String newPwd
+    ){
+        Integer userType = JwtHelper.getUserType(token);
+        Integer userId = JwtHelper.getUserId(token).intValue();
+        switch (userType){
+            case 1: // 管理员
+                Admin admin = adminService.getAdminById(userId);
+                if(!admin.getPassword().equals(MD5.encrypt(oldPwd))){
+                   return Result.fail().message("旧密码错误...");
+                }
+                admin.setPassword(MD5.encrypt(newPwd));
+                adminService.saveOrUpdate(admin);
+                break;
+            case 2: // 学生
+                Student student = studentService.getStudentById(userId);
+                if(!student.getPassword().equals(MD5.encrypt(oldPwd))){
+                    return Result.fail().message("旧密码错误...");
+                }
+                student.setPassword(MD5.encrypt(newPwd));
+                studentService.saveOrUpdate(student);
+                break;
+            case 3: // 老师
+                Teacher teacher = teacherService.getTeacherById(userId);
+                if(!teacher.getPassword().equals(MD5.encrypt(oldPwd))){
+                    return Result.fail().message("旧密码错误...");
+                }
+                teacher.setPassword(MD5.encrypt(newPwd));
+                teacherService.saveOrUpdate(teacher);
+                break;
+        }
+        return Result.ok();
+    }
 
     @ApiOperation("文件上传同意接口")
     @PostMapping("/headerImgUpload")
