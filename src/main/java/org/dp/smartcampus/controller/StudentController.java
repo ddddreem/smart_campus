@@ -6,9 +6,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.dp.smartcampus.pojo.Student;
-import org.dp.smartcampus.pojo.Teacher;
 import org.dp.smartcampus.service.StudentService;
-import org.dp.smartcampus.service.TeacherService;
+import org.dp.smartcampus.util.MD5;
 import org.dp.smartcampus.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +49,11 @@ public class StudentController {
     @ApiOperation("添加或者更新教师信息")
     @PostMapping("/addOrUpdateStudent")
     public Result addOrUpdateStudent(@ApiParam("新增或者修改的学生表单信息") @RequestBody Student student){
+        Integer id = student.getId();
+        String password = student.getPassword();
+        if(null == id){
+            student.setPassword(MD5.encrypt(password));
+        }
         studentService.saveOrUpdate(student);
         return Result.ok();
     }

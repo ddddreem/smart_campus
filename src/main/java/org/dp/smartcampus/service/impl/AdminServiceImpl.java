@@ -1,6 +1,8 @@
 package org.dp.smartcampus.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dp.smartcampus.mapper.AdminMapper;
 import org.dp.smartcampus.pojo.Admin;
@@ -9,6 +11,7 @@ import org.dp.smartcampus.service.AdminService;
 import org.dp.smartcampus.util.MD5;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 /**
  * @Description:
@@ -33,5 +36,16 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         queryWrapper.eq("id", userId);
         Admin admin = baseMapper.selectOne(queryWrapper);
         return admin;
+    }
+
+    @Override
+    public IPage<Admin> getAllAdmin(Page<Admin> pageParam, String adminName) {
+        QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
+        if(!StringUtils.isEmpty(adminName)){
+            queryWrapper.like("name", adminName);
+        }
+        queryWrapper.orderByDesc("id");
+        Page<Admin> page = baseMapper.selectPage(pageParam, queryWrapper);
+        return page;
     }
 }
